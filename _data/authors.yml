@@ -1,0 +1,6 @@
+# use author : sanjay0302 in your posts yaml front matter to set this author.com
+# or authors: [sanjay0302, another_author]
+
+sanjay0302:
+  name: Sanjaybyranna
+  url: https://github.com/Sanjay0302

@@ -9,7 +9,7 @@ theme: jekyll-theme-chirpy
 lang: en
 
 # Change to your timezone › https://kevinnovak.github.io/Time-Zone-Picker
-timezone:
+timezone: Asia/Kolkata
 
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
@@ -38,8 +38,7 @@ social:
   email: sanjay0302@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/username # change to your Twitter homepage
-    - https://github.com/username # change to your GitHub homepage
+    - https://github.com/Sanjay0302 # change to your GitHub homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
     # - https://www.linkedin.com/in/username
@@ -109,25 +108,38 @@ toc: true
 
 comments:
   # Global switch for the post-comment system. Keeping it empty means disabled.
-  provider: # [disqus | utterances | giscus]
+  provider: giscus # [disqus | utterances | giscus]
+  # gisus is based on github discussions, see https://giscus.app
+  # disqus is based on disqus.com, see https://disqus.com
+  # utterances is based on github issues, see https://utteranc.es
+
   # The provider options are as follows:
   disqus:
     shortname: # fill with the Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
-  # utterances settings › https://utteranc.es/
+
+  # Setting up utterances is simple, just provide the repo name and issue term.
+  # And make sure you have installed the app [Utterances](https://github.com/apps/utterances) in your repo.
+  # Finally, go to utterances settings › https://utteranc.es/ to get the configuration parameters.
   utterances:
-    repo: # <gh-username>/<repo>
-    issue_term: # < url | pathname | title | ...>
+    repo: Sanjay0302/sanjay0302.github.io # <gh-username>/<repo>
+    issue_term: pathname # < url | pathname | title | ...>
+
   # Giscus options › https://giscus.app
+  # Enable the Github Discussion feature in your repo first.
+  # Then create a discussion category named "Giscus Blog Comments" in your repo.
+  # And make sure you have installed the app [Giscus](https://github.com/apps/giscus) in your repo.
+  # Finally, go to giscus settings › https://giscus.app to get the configuration parameters.
   giscus:
-    repo: # <gh-username>/<repo>
-    repo_id:
-    category:
-    category_id:
-    mapping: # optional, default to 'pathname'
-    strict: # optional, default to '0'
-    input_position: # optional, default to 'bottom'
-    lang: # optional, default to the value of `site.lang`
-    reactions_enabled: # optional, default to the value of `1`
+    repo: Sanjay0302/sanjay0302.github.io # <gh-username>/<repo>
+    repo_id: R_kgDOP4YwfQ
+    category: Giscus Blog Comments
+    category_id: DIC_kwDOP4Ywfc4CwACe # For each time you chnge the category, you need to update the category_id too.
+    mapping: pathname # optional, default to 'pathname'
+    strict: 0 # optional, default to '0'
+    input_position: top # optional, default to 'bottom'
+    lang: en # optional, default to the value of `site.lang`
+    reactions_enabled: 1 # optional, default to the value of `1`
+    loading: lazy # optional, default to 'lazy'
 
 # Self-hosted static assets, optional › https://github.com/cotes2020/chirpy-static-assets
 assets:
@@ -147,6 +159,8 @@ pwa:
     deny_paths:
       # - "/example"  # URLs match `<SITE_URL>/example/*` will not be cached by the PWA
 
+# The paginate setting controls how many blog posts are
+# displayed per page on your site's main blog listing page.
 paginate: 10
 
 # The base URL of your site
