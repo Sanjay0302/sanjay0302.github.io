@@ -164,7 +164,7 @@ pwa:
 paginate: 10
 
 # The base URL of your site
-baseurl: ""
+baseurl: "blogs"
 
 # ------------ The following options are not recommended to be modified ------------------
 
