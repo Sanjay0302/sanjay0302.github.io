@@ -164,7 +164,7 @@ pwa:
 paginate: 10
 
 # The base URL of your site
-baseurl: "blogs"
+baseurl: ""
 
 # ------------ The following options are not recommended to be modified ------------------
 
@@ -238,3 +238,34 @@ jekyll-archives:
   permalinks:
     tag: /tags/:name/
     category: /categories/:name/
+
+jekyll_compose:
+  auto_open: true
+  default_front_matter:
+    drafts:
+      description:
+      image:
+      category: []
+      tags: []
+      author: sanjay0302
+      pin: false
+      math: true
+      mermaid: true
+      published: true
+      toc: true # These are already enabled in defaults: of _config.yml
+      comments: true # These are already enabled in defaults: of _config.yml
+      media_subpath: # To specify the resource path prefix for the current post/page range, set `media_subpath`
+    posts:
+      description:
+      image:
+      category:
+      tags:
+      author: sanjay0302
+      pin: false
+      math: true
+      mermaid: true
+      published: true
+      toc: true # These are already enabled in defaults: of _config.yml
+      comments: true # These are already enabled in defaults: of _config.yml
+      media_subpath: # To specify the resource path prefix for the current post/page range, set `media_subpath`
+

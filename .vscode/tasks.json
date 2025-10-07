@@ -7,7 +7,7 @@
       "command": "./tools/run.sh",
       "group": {
         "kind": "build",
-        "isDefault": true
+        "isDefault": false
       },
       "problemMatcher": [],
       "detail": "Runs the Jekyll server with live reload."
@@ -21,6 +21,121 @@
       },
       "problemMatcher": [],
       "detail": "Build the Jekyll site for production."
+    },
+    {
+      "label": "POST",
+      "type": "shell",
+      "command": "bundle",
+      "args": [
+        "exec",
+        "jekyll",
+        "post",
+        "\"${input:postname}\"",
+        "--timestamp-format",
+        "\"${input:date}\""
+      ],
+      "options": {
+        "env": {
+          "JEKYLL_EDITOR": "code"
+        }
+      },
+      "group": {
+        "kind": "build"
+      },
+      "detail": "Create a POST"
+    },
+    {
+      "label": "DRAFT",
+      "type": "shell",
+      "command": "bundle",
+      "args": ["exec", "jekyll", "draft", "\"${input:postname}\""],
+      "options": {
+        "env": {
+          "JEKYLL_EDITOR": "code"
+        }
+      },
+      "group": {
+        "kind": "build"
+      },
+      "detail": "Create a DRAFT"
+    },
+    {
+      "label": "PUBLISH",
+      "type": "shell",
+      "command": "bundle",
+      "args": ["exec", "jekyll", "publish", "_drafts/${input:postname}.md"],
+      "group": {
+        "kind": "build"
+      },
+      "detail": "PUBLISH a draft"
+    },
+    {
+      "label": "UNPUBLISH",
+      "type": "shell",
+      "command": "bundle",
+      "args": ["exec", "jekyll", "unpublish", "_posts/${input:postname}.md"],
+      "group": {
+        "kind": "build"
+      },
+      "detail": "UNPUBLISH a post"
+    },
+    {
+      "label": "RENAME Drafts",
+      "type": "shell",
+      "command": "bundle",
+      "args": [
+        "exec",
+        "jekyll",
+        "rename",
+        "_drafts/${input:oldname}.md",
+        "\"${input:newname}\""
+      ],
+      "group": {
+        "kind": "build"
+      },
+      "detail": "Rename the old draft"
+    },
+    {
+      "label": "RENAME Posts",
+      "type": "shell",
+      "command": "bundle",
+      "args": [
+        "exec",
+        "jekyll",
+        "rename",
+        "_posts/${input:oldname}.md",
+        "\"${input:newname}\""
+      ],
+      "group": {
+        "kind": "build"
+      },
+      "detail": "Rename the old draft"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "postname",
+      "type": "promptString",
+      "description": "Enter the post name",
+      "default": "POST"
+    },
+    {
+      "id": "date",
+      "type": "promptString",
+      "description": "date schema in yaml frontmatter",
+      "default": "%Y-%m-%d %H:%M:%S %z"
+    },
+    {
+      "id": "oldname",
+      "type": "promptString",
+      "description": "Enter the old name",
+      "default": "POST"
+    },
+    {
+      "id": "newname",
+      "type": "promptString",
+      "description": "Enter the new name",
+      "default": "POST"
     }
   ]
 }

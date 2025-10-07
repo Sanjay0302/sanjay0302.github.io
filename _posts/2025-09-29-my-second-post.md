@@ -266,9 +266,7 @@ Complete test suite for the YouTube embed include file with all parameter combin
 {% endraw %}
 ```
 
-```liquid
 {% include embed/youtube.html id='LJBQ29h7rMM' %}
-```
 
 {% include embed/youtube.html id='LJBQ29h7rMM' loop=1 %}
 

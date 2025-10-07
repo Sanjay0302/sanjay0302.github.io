@@ -1,4 +1,19 @@
-<!-- HTML -->
+{%- capture youtube_url -%}
+https://www.youtube.com/embed/{{ include.id }}?color={{ include.color | default: 'red' }}&controls={{ include.controls | default: 1 }}&fs={{ include.fs | default: 1 }}&rel={{ include.rel | default: 0 }}
+{%- if include.autoplay -%}&autoplay={{ include.autoplay }}{%- endif -%}
+{%- if include.cc_load_policy -%}&cc_load_policy={{ include.cc_load_policy }}{%- endif -%}
+{%- if include.disablekb -%}&disablekb={{ include.disablekb }}{%- endif -%}
+{%- if include.end -%}&end={{ include.end }}{%- endif -%}
+{%- if include.mute -%}&mute={{ include.mute }}{%- endif -%}
+{%- if include.playsinline -%}&playsinline={{ include.playsinline }}{%- endif -%}
+{%- if include.start -%}&start={{ include.start }}{%- endif -%}
+{%- if include.loop == 1 -%}
+  &loop=1&playlist={{ include.id }}{%- if include.next_id -%},{{ include.next_id }}{%- endif -%}
+{%- elsif include.next_id -%}
+  &playlist={{ include.id }},{{ include.next_id }}
+{%- endif -%}
+{%- endcapture -%}
+
 <iframe
   class="embed-video"
   loading="lazy"
@@ -6,50 +21,5 @@
   frameborder="0"
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
   allowfullscreen
+  src="{{ youtube_url | strip }}"
 ></iframe>
-
-{% comment %} dynamically creating the src attribute for previous iframe {% endcomment %}
-
-<script>
-  (function() {
-    function buildYouTubeSrc(videoId, params = {}) {
-      const base = `https://www.youtube.com/embed/${encodeURIComponent(videoId)}`;
-
-      // handle playlist logic
-      if (params.loop === 1 || params.next_id) {
-        params.playlist =  params.next_id ? `${videoId},${params.next_id}` : videoId;
-        delete params.next_id;
-      }
-
-      // filtering and serializing the params
-      const qs = Object.entries(params)
-        .filter(([k, v]) => v != null && v !== false && v !== '')
-        .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
-        .join('&');
-      return qs ? `${base}?${qs}` : base;
-    }
-
-    const iframe = document.currentScript.previousElementSibling;
-    const videoId = '{{ include.id }}';
-
-    // refer this for valid key value pairs for embed settings
-    // https://developers.google.com/youtube/player_parameters#Parameters
-    const params = {
-      autoplay: {{ include.autoplay | default: 0 }}, // only works when mute=1
-      cc_load_policy: {{ include.cc_load_policy | default: 0 }},
-      color: '{{ include.color | default: 'red' }}', // valid color : 'red' and 'white'
-      controls: {{ include.controls | default: 1 }},
-      disablekb: {{ include.disablekb | default: 0 }},
-      end: {{ include.end | default: 0 }},
-      fs: {{ include.fs | default: 1 }},
-      loop: {{ include.loop | default: 0 }},
-      rel: {{ include.rel | default: 0 }}, // 0 will only recommend video from the channel of currently played video
-      mute: {{ include.mute | default: 0 }}, // default not on mute
-      playsinline: {{ include.playsinline | default: 0 }}, // only for ios
-      start: {{ include.start | default: 0 }}, // possitive integer
-      next_id: '{{ include.next_id }}', // custom variable to hold the playlist id's
-    };
-
-    iframe.src = buildYouTubeSrc(videoId, params);
-  })();
-</script>
