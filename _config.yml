@@ -269,3 +269,5 @@ jekyll_compose:
       comments: true # These are already enabled in defaults: of _config.yml
       media_subpath: # To specify the resource path prefix for the current post/page range, set `media_subpath`
 
+include:
+  - _user_assets
