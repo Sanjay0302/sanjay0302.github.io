@@ -1,0 +1,165 @@
+{% raw %}
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  image-with-copy  —  Usage Guide                            ║
+  ╠══════════════════════════════════════════════════════════════╣
+  ║                                                              ║
+  ║  STEP 1 — Store your code (choose inline or external file):  ║
+  ║                                                              ║
+  ║    Option A (Inline):                                        ║
+  ║      {% capture py_code %} ... {% endcapture %}              ║
+  ║      {% include image-with-copy.html id="p1" code=py_code %} ║
+  ║                                                              ║
+  ║    Option B (External File):                                 ║
+  ║      {% include image-with-copy.html %}                      ║
+  ║                                                              ║
+  ║  STEP 2 — Tag your image with Kramdown inline attributes:    ║
+  ║                                                              ║
+  ║    Option A (Inline):                                        ║
+  ║      ![Alt](/img.png){: .iwc data-iwc="p1" }                 ║
+  ║                                                              ║
+  ║    Option B (External file):                                 ║
+  ║      ![Alt](/img.png){: .iwc data-url="/assets/plot.py" }    ║
+  ║                                                              ║
+  ║  Parameters for this include:                                ║
+  ║    id    – unique key matching data-iwc on the image         ║
+  ║    code  – source code via capture block                     ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+{% endraw %}
+
+{%- comment -%} Hidden code store for inline code captures {%- endcomment -%}
+
+{%- if include.id and include.code -%}
+<textarea id="iwc-{{ include.id }}" class="iwc-store">{{ include.code | strip }}</textarea>
+{%- endif -%}
+
+{%- comment -%} Emit the JS initializer once, guarded by a sentinel class on <body> {%- endcomment -%}
+
+<script>
+(function () {
+  if (document.body.classList.contains('iwc-ready')) return;
+  document.body.classList.add('iwc-ready');
+
+  function initIwc() {
+    document.querySelectorAll('img.iwc').forEach(function (img) {
+      /* Code source: either pre-stored inline code, or an external URL to fetch */
+      var key   = img.dataset.iwc;
+      var url   = img.dataset.url;
+      var label = img.dataset.label || 'Copy source';
+
+      /* If url is provided but relative (e.g. "script.py" instead of "/path/script.py"),
+         infer the path from the image's src so it automatically respects media_subpath */
+      if (url && !url.startsWith('/') && !url.match(/^https?:\/\//)) {
+        var basePath = img.src.substring(0, img.src.lastIndexOf('/') + 1);
+        url = basePath + url;
+      }
+      
+      var code = '';
+      if (key) {
+        var store = document.getElementById('iwc-' + key);
+        if (store) code = store.value;
+      }
+
+      /* Chirpy wraps <img> in <a class="img-link">.
+         We want to wrap that <a> (or the img if no <a> parent). */
+      var target = (img.parentNode && img.parentNode.classList.contains('img-link'))
+        ? img.parentNode
+        : img;
+
+      /* Build the grid wrapper */
+      var wrapper = document.createElement('div');
+      wrapper.className = 'iwc-wrapper';
+
+      /* Propagate Kramdown layout classes (.left, .right, .shadow, etc.) 
+         from BOTH img and the Chirpy <a> wrapper (Chirpy moves some classes) */
+      var classesToCopy = Array.from(img.classList).concat(Array.from(target.classList));
+      classesToCopy.forEach(function (cls) {
+        if (cls === 'left' || cls === 'right' || cls === 'shadow' || cls.startsWith('w-') || cls.startsWith('mw-')) {
+          wrapper.classList.add(cls);
+        }
+      });
+
+      target.parentNode.insertBefore(wrapper, target);
+      wrapper.appendChild(target);
+
+      /* Build the copy button — mirror Chirpy's .code-header button */
+      var btn = document.createElement('button');
+      btn.className  = 'iwc-copy-btn';
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('data-bs-toggle', 'tooltip');
+      btn.setAttribute('data-bs-placement', 'top');
+      btn.setAttribute('title', label);
+      btn.innerHTML  = '<i class="far fa-clipboard"></i>';
+
+      /* Initialize native Bootstrap Tooltip if available (Chirpy standard) */
+      if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+        new bootstrap.Tooltip(btn);
+      }
+
+      var doCopy = function (text) {
+        navigator.clipboard.writeText(text).then(function () {
+          btn.setAttribute('timeout', '');
+          btn.querySelector('i').className = 'fas fa-check';
+          
+          /* Show Copied! tooltip using Bootstrap */
+          var t = (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) 
+                  ? bootstrap.Tooltip.getInstance(btn) : null;
+          if (t) {
+            btn.setAttribute('data-bs-original-title', 'Copied!');
+            t.show();
+          } else {
+            btn.title = "Copied!";
+          }
+
+          setTimeout(function () {
+            btn.removeAttribute('timeout');
+            btn.querySelector('i').className = 'far fa-clipboard';
+            if (t) {
+              btn.setAttribute('data-bs-original-title', label);
+              t.hide();
+            } else {
+              btn.title = label;
+            }
+          }, 2000);
+        }).catch(function () {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.cssText = 'position:fixed;opacity:0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        });
+      };
+
+      btn.addEventListener('click', function () {
+        if (url) {
+          /* Fetch external file dynamically on click */
+          fetch(url).then(function(res) {
+            if (!res.ok) throw new Error("HTTP error " + res.status);
+            return res.text();
+          }).then(function(text) {
+            doCopy(text.trim());
+          }).catch(function(err) {
+            console.error("Failed to fetch code from: " + url, err);
+            alert("Failed to load source code.");
+          });
+        } else if (code) {
+          /* Use pre-stored inline code */
+          doCopy(code);
+        }
+      });
+
+      wrapper.appendChild(btn);
+    });
+  }
+
+  /* Run after window load so Chirpy's glightbox has already wrapped images */
+  if (document.readyState === 'complete') {
+    initIwc();
+  } else {
+    window.addEventListener('load', initIwc);
+  }
+}());
+</script>

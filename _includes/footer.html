@@ -51,3 +51,12 @@
 
   <p>Last updated on {{ site.time | date: '%B %d, %Y' }}</p>
 </footer>
+
+{% raw %}
+  {% comment %}
+    include image-with-copy.html to include the image and its source code
+    if you remove from here you might need to add the below lone locally inside the post
+  {% endcomment %}
+{% endraw %}
+
+{% include image-with-copy.html %}

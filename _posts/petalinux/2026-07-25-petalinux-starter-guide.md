@@ -8,7 +8,7 @@ image:
   path: banner.gif
   # lqip helps in getting smother animation for large image size that loads slowly 
   lqip: data:image/webp;base64,UklGRpoAAABXRUJQVlA4WAoAAAAQAAAADwAABwAAQUxQSDIAAAARL0AmbZurmr57yyIiqE8oiG0bejIYEQTgqiDA9vqnsUSI6H+oAERp2HZ65qP/VIAWAFZQOCBCAAAA8AEAnQEqEAAIAAVAfCWkAALp8sF8rgRgAP7o9FDvMCkMde9PK7euH5M1m6VWoDXf2FkP3BqV0ZYbO6NA/VFIAAAA
-  alt: banner
+  # alt: banner
 category: [Embedded Linux, Xilinx]
 tags: [petalinux, yocto, zcu102, mpsoc, fpga, bootloader]
 author: sanjay0302

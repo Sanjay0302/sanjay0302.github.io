@@ -1,0 +1,119 @@
+---
+---
+
+@use 'abstracts/variables' with (
+  $theme: '{{ site.theme_mode }}'
+);
+
+/* prettier-ignore */
+@use 'main
+{%- if jekyll.environment == 'production' -%}
+  .bundle
+{%- endif -%}
+';
+
+/* append your custom style below */
+
+/* Justify post body paragraphs */
+.content > p {
+  text-align: justify;
+}
+
+/* Custom rounding utility class for any image 
+   Usage in markdown: ![alt](/path/img.png){: .rounded }
+*/
+img.rounded, .rounded img {
+  border-radius: 10px;
+}
+
+/* ── image-with-copy component ─────────────────────────────────────── */
+
+/* hidden textarea code stores — must never be visible */
+.iwc-store {
+  display: none !important;
+}
+
+/* JS builds .iwc-wrapper dynamically around the image + Chirpy's <a> */
+.iwc-wrapper {
+  display: grid;
+  width: fit-content;
+  margin: 0 auto 1.5rem auto; /* Centers wrapper, handles layout flow */
+
+  /* Handle Kramdown floats */
+  &.left {
+    float: left;
+    margin: 0.5rem 1.5rem 1.25rem 0;
+  }
+  &.right {
+    float: right;
+    margin: 0.5rem 0 1.25rem 1.5rem;
+  }
+
+  /* Both the image and the surrounding anchor link fill the single grid cell */
+  > * {
+    grid-area: 1 / 1;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  /* Reset image margins because the wrapper now handles flow & centering */
+  img,
+  a.popup {
+    display: block;
+    max-width: 100%;
+    margin: 0 !important;
+  }
+
+  /* The copy button overlays top-right inside the exact image bounds */
+  .iwc-copy-btn {
+    align-self: start;
+    justify-self: end;
+    margin: 0.4rem;
+    z-index: 20;
+
+    /* Sizing identical to Chirpy's .code-header button */
+    height: 2rem;
+    width: 2rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 10px;
+
+    /* Adapt dynamically to Chirpy's dark/light modes using its variables */
+    background-color: var(--code-header-muted-color, rgba(0, 0, 0, 0.45));
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease;
+
+    i {
+      color: var(--code-header-icon-color, #c9c8c8);
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    /* hover idle */
+    &:not([timeout]):hover {
+      background-color: var(--inline-code-bg, rgba(128, 128, 128, 0.55));
+      i {
+        color: var(--code-header-text-color, #fff);
+      }
+    }
+
+    /* copied state [timeout] mirrors Chirpy exactly */
+    &[timeout] {
+      border-color: var(--clipboard-checked-color, #43c743);
+      i {
+        color: var(--clipboard-checked-color, #43c743);
+        font-size: 90%;
+      }
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
