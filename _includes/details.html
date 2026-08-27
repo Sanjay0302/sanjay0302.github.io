@@ -1,0 +1,13 @@
+{% assign line_count = include.content | newline_to_br | strip_newlines | split: '<br />' | size %}
+
+<details class="collapsible-summary">
+  <summary>
+    <span class="summary-wrapper">
+      <code class="summary-title">{{ include.title }}</code>
+      <code class="line-badge">({{ line_count }} lines)</code>
+    </span>
+  </summary>
+  <div class="summary-content" markdown="1">
+    {{ include.content }}
+  </div>
+</details>

@@ -7,7 +7,7 @@ image:
   path: banner.gif
   lqip: data:image/webp;base64,UklGRpoAAABXRUJQVlA4WAoAAAAQAAAADwAABwAAQUxQSDIAAAARL0AmbZurmr57yyIiqE8oiG0bejIYEQTgqiDA9vqnsUSI6H+oAERp2HZ65qP/VIAWAFZQOCBCAAAA8AEAnQEqEAAIAAVAfCWkAALp8sF8rgRgAP7o9FDvMCkMde9PK7euH5M1m6VWoDXf2FkP3BqV0ZYbO6NA/VFIAAAA
   # alt: banner
-category: [Protocol, SFPDP]
+category: [Protocol, sFPDP, Chapter 1]
 tags: [sfpdp, optical]
 author: sanjay0302
 pin: false
@@ -21,7 +21,7 @@ media_subpath: "/_user_assets/sfpdp"
 <!-- Link Definitions -->
 [Fiber Channel Interface Manual]: https://www.seagate.com/staticfiles/support/disc/manuals/fc/77767496d.pdf
 
-If you work in high-speed data acquisition, radar, or medical imaging, you have probably bumped into **sFPDP (Serial Front Panel Data Port)**. Defined by the **VITA 17.1** standard, sFPDP is designed to stream continuous, high-bandwidth data point-to-point with virtually zero overhead. But if you try to learn how the protocol actually works, you will quickly hit a wall. Because the official standard (ANSI/VITA 17.1) is kept behind a paywall, there is a massive lack of open-source tutorials explaining its architecture.
+If you had worked with high-speed data acquisition, radar, or medical imaging, you have probably bumped into **sFPDP (Serial Front Panel Data Port)**. Defined by the **VITA 17.1** standard, sFPDP is designed to stream continuous, high-bandwidth data point-to-point with virtually zero overhead. But if you try to learn how the protocol actually works, you will quickly hit a wall. Because the official standard (ANSI/VITA 17.1) is kept behind a paywall, there is a massive lack of open-source tutorials explaining its architecture.
 
 Originally, parallel FPDP transferred data at speeds up to 160 MB/s using a 32-bit synchronous ribbon cable. While designed for real-time data streaming with minimal delay, parallel FPDP was severely limited by short cable lengths (1 to 5 meters). To overcome this limitation, the protocol evolved into sFPDP (VITA 17.1). By serializing the data stream, sFPDP allows for connections up to 10 kilometers using fiber optic cables.
 

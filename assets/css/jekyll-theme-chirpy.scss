@@ -19,10 +19,11 @@
   text-align: justify;
 }
 
-/* Custom rounding utility class for any image 
+/* Custom rounding utility class for any image
    Usage in markdown: ![alt](/path/img.png){: .rounded }
 */
-img.rounded, .rounded img {
+img.rounded,
+.rounded img {
   border-radius: 10px;
 }
 
@@ -114,6 +115,112 @@ img.rounded, .rounded img {
 
     &:focus {
       outline: none;
+    }
+  }
+}
+/* ── collapsible summary component (Chirpy Native & Sleek) ────────── */
+
+details.collapsible-summary {
+  margin: 1rem 0;
+  border: 1px solid var(--search-border-color, var(--border-color));
+  border-radius: 0.5rem;
+  overflow: hidden;
+  /* Uses Chirpy's native semi-transparent prompt/card background layer */
+  background-color: var(--prompt-bg, var(--card-bg));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+
+  summary {
+    padding: 0.45rem 0.85rem;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.925rem;
+    color: var(--heading-color);
+    /* Subtle transparency layer for the title bar */
+    background-color: var(--tag-bg, rgba(127, 127, 127, 0.08));
+    transition: background-color 0.2s ease;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    list-style: none;
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &:hover {
+      background-color: var(--btn-border-color);
+    }
+
+    /* Sleek rotating arrow icon on the right */
+    &::after {
+      content: '›';
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1;
+      color: var(--text-muted-color);
+      transition: transform 0.2s ease;
+    }
+  }
+
+  &[open] summary {
+    border-bottom: 1px solid var(--search-border-color, var(--border-color));
+
+    &::after {
+      transform: rotate(90deg);
+    }
+  }
+
+  .summary-content {
+    padding: 0.75rem 0.85rem;
+    font-size: 0.925rem;
+    color: var(--text-color);
+    background-color: transparent;
+
+    > *:first-child {
+      margin-top: 0;
+    }
+    > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .collapsible-summary {
+    summary {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      justify-content: space-between;
+
+      /* Groups the title and line badge tightly together on the left */
+      .summary-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem; /* Space between the title box and the line count */
+        min-width: 0;
+      }
+
+      .summary-title {
+        font-family: var(--code-font-family, monospace);
+        font-size: 0.85em;
+        padding: 0.2em 0.4em;
+        border-radius: 6px;
+        background-color: var(--inline-code-bg, rgba(127, 127, 127, 0.15));
+        color: var(--inline-code-color, inherit);
+      }
+
+      .line-badge {
+        font-family: var(--code-font-family, monospace);
+        font-size: 0.75rem;
+        opacity: 0.6;
+        font-weight: normal;
+        background: transparent;
+        padding: 0;
+        white-space: nowrap;
+      }
     }
   }
 }

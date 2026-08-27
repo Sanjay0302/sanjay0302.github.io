@@ -3,13 +3,12 @@ layout: post
 title: Petalinux Stater Guide
 date: 2026-07-25 17:26 +0530
 description: This blog will help you start with building customized linux for Xilinx based MPSOC (ZCU102) 
-# image: https://www.centennialsoftwaresolutions.com/help/figure-out-petalinux-yocto-version/yocto_project_logo_1.png
 image: 
   path: banner.gif
   # lqip helps in getting smother animation for large image size that loads slowly 
   lqip: data:image/webp;base64,UklGRpoAAABXRUJQVlA4WAoAAAAQAAAADwAABwAAQUxQSDIAAAARL0AmbZurmr57yyIiqE8oiG0bejIYEQTgqiDA9vqnsUSI6H+oAERp2HZ65qP/VIAWAFZQOCBCAAAA8AEAnQEqEAAIAAVAfCWkAALp8sF8rgRgAP7o9FDvMCkMde9PK7euH5M1m6VWoDXf2FkP3BqV0ZYbO6NA/VFIAAAA
   # alt: banner
-category: [Embedded Linux, Xilinx]
+category: [Linux, Xilinx, Petalinux, Starter Guide]
 tags: [petalinux, yocto, zcu102, mpsoc, fpga, bootloader]
 author: sanjay0302
 pin: false
@@ -172,12 +171,12 @@ Need to enable these configs to properly use EFI and GPT Partition
 
 ---
 
+## Preparing the Bootable Flash Drive {#preparing-the-bootable-flash-drive}
+
 ```bash
-# Then builld the image
+# Then build the image
 petalinux-build
 ```
-
----
 
 > Jumper settings
 >
@@ -188,15 +187,13 @@ petalinux-build
 > * Connect `TX_ENABLE` jumper before trying to use SFP connector ; (`for ex, connect J16 for SFP0`)
 {: .prompt-info }
 
----
-
 > * The problem occurs specifically when connecting a USB 2.0 flash drive directly to the ZCU102's USB 3.0 Micro B upstream port—the protocol mismatch prevents proper enumeration in U-Boot and the kernel. Using a USB hub between them resolves this by allowing the hub's downstream port to negotiate USB 2.0 speeds.
 > * Or try changing `maximum-speed` to `high-speed` to enable USB 2.0 instead of USB 3.0 `super-speed` in device tree; Refer [DWC3 Xilinx Linux USB driver](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841729/DWC3+Xilinx+Linux+USB+driver#Devicetree)
 {: .prompt-danger }
 
 ---
 
-## Preparing the Bootable Flash Drive
+
 
 Use `gparted` tool and format the flash drive with ext4 format and create a single partition.
 
@@ -224,7 +221,7 @@ Then connect this flash drive with `Micro-B to USB-A` dongle along with an `usb 
 
 ---
 
-## Booting Bootloaders
+## Booting Bootloaders {#booting-bootloaders}
 
 ```bash
 # flash the FSBL->TFA(BL31)->Uboot(BL33) directly to RAM
@@ -253,7 +250,7 @@ sudo picocom -b 115200 /dev/ttyUSB0
 
 ---
 
-## Booting Kernel
+## Booting Kernel {#booting-kernel}
 
 ```bash
 ZynqMP> usb start # detects the HUB ports, onboard USB port and the connected flash drive
