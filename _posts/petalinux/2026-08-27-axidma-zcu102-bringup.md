@@ -36,7 +36,14 @@ file mkdir "[file normalize ~]/axidma-vivado"
 cd "[file normalize ~]/axidma-vivado"
 ```
 
-Downlaod this `.tcl` script [`axi-dma.tcl`]({{ page.media_subpath | append: 'axi-dma/axi-dma.tcl' | relative_url }}) and save it inside `~/axidma-vivado`.
+[axi-dma.tcl]: https://github.com/Sanjay0302/axidma-petalinux/blob/b35f0c39ab94c302b841f6f25c232c2ff58b5173/Hardware/zcu102-axi-hp.tcl
+
+Downlaod this `.tcl` script [`axi-dma.tcl`][axi-dma.tcl] and save it inside `~/axidma-vivado`.
+
+> This tcl script uses HP port, so this port doesn't suppport hardware cache coherency (cci-400).
+>
+> The script with `cci-400` will be explained in next blog.
+
 
 ```bash
 # make sure to save the downloaded tcl script inside this folder ~/axidma-vivado
@@ -45,11 +52,13 @@ Downlaod this `.tcl` script [`axi-dma.tcl`]({{ page.media_subpath | append: 'axi
 source "[file normalize ~]/axidma-vivado/axi-dma.tcl"
 # Open the block design
 open_bd_design "[file normalize ~]/axidma-vivado/axi-dma/axi-dma.srcs/sources_1/bd/design_1/design_1.bd"
+# regenerate block design layout
+regenerate_bd_layout
 ```
 
 The block diagram would look similar to this;
 
-![BD](axi-dma/dma-bd.png){: .rounded lqip="{{ site.ph.lqip }}"}
+![BD](axi-dma/dma-hp-bd.png){: .rounded lqip="{{ site.ph.lqip }}"}
 
 ```bash
 # Run synthesis
@@ -232,14 +241,27 @@ nano project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi
 / {
 
     // this node is needed to test axidma using axidmatest kernel module
+    // this driver has to be manually probed by user
+    // there is no modprobe.d rule for this official axidmatest driver from the kernel source
     dmatest_0: dmatest@0 {
         compatible = "xlnx,axi-dma-test-1.00.a";
         dmas = <&axi_dma_0 0 &axi_dma_0 1>;
         dma-names = "axidma0", "axidma1";
     };
+
+    /* To use the changed PL clock in vivado zynq configuration menu,
+     * specify that clock in DT to make the changes effective in the petalinux build.
+     */
+    fclk0 {
+        status = "okay";
+        assigned-clocks = <&zynqmp_clk PL0_REF>;
+        assigned-clock-rates = <100000000>; // 100MHz
+    };
 };
 
-/* Override the second channel's device-id to 1 so they are unique */
+/* Override the second channel's device-id to 1 so they are unique; 
+ * Some driver expect the channel id to be unique.
+ */
 &axi_dma_0 {
     dma-channel@a0000030 {
         xlnx,device-id = <0x1>;
