@@ -32,6 +32,8 @@ media_subpath: /_user_assets/petalinux/
 [Unified Installer]: https://account.amd.com/en/forms/downloads/xef.html?filename=Xilinx_Unified_2022.2_1014_8888.tar.gz
 [ubuntu-22.04.5-desktop-amd64.iso]: https://releases.ubuntu.com/jammy/
 [Installation Requirements]: https://docs.amd.com/r/2022.2-English/ug1144-petalinux-tools-reference-guide/Installation-Requirements
+[Vivado and Vitis]: https://www.amd.com/en/support/downloads/adaptive-socs-and-fpgas/development-tools/2026-1.html
+[Petalinux Tools]: https://www.amd.com/en/support/downloads/adaptive-socs-and-fpgas/embedded-software.html
 
 # ZCU102 Petalinux Build
 
@@ -47,15 +49,15 @@ For a particular version of petalinux toolchain, try to use its recommended linu
 6. [sstate_arm_2022.2_10071807.tar.gz][sstate_arm_2022.2_10071807.tar.gz] contains necessary cache files for arm32 to speed up the build process; download manually for offline builds.
 7. [microblaze_2022.2_10071807.tar.gz][microblaze_2022.2_10071807.tar.gz] contains necessary cache files for microblaze to speed up the build process; download manually for offline builds.
 8. Install Xilinx_Unified_2022.2_1014_8888 Vivado and Vitis.
-   1. [Windows Web Installer][Windows Web Installer]
-   2. [Linux Web Installer][Linux Web Installer]
-   3. [Unified Installer][Unified Installer]
+   1. [Windows Web Installer]
+   2. [Linux Web Installer]
+   3. [Unified Installer]
 9. Follow the [Installation Requirements][Installation Requirements]
 
 > Official download page for other versions of petalinux and vivado tools
 >
-> * [Vivado and Vitis](https://www.amd.com/en/support/downloads/adaptive-socs-and-fpgas/development-tools/2026-1.html)
-> * [Petalinux Tools](https://www.amd.com/en/support/downloads/adaptive-socs-and-fpgas/embedded-software.html)
+> * [Vivado and Vitis]
+> * [Petalinux Tools]
 {: .prompt-info }
 
 ---

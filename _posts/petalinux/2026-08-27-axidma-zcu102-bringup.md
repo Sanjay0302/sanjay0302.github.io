@@ -18,7 +18,13 @@ comments: true
 media_subpath: /_user_assets/petalinux/
 ---
 
-In this post, we will walk through the bring-up and testing of the AXIDMA using vitis bare-metal examples and the petalinux axidmatest driver. The hardware configuration for this demonstration is based on the setup described at [fpgadeveloper.com](https://www.fpgadeveloper.com/2014/08/using-the-axi-dma-in-vivado.html), you can also refer the [youtube video](https://www.youtube.com/watch?v=Ld01yPmW_Xw); however, I have provided the full `.tcl` script for the vivado project to simplify the setup.
+[fpgadeveloper.com]: https://www.fpgadeveloper.com/2014/08/using-the-axi-dma-in-vivado.html
+[axi-dma.tcl]: https://github.com/Sanjay0302/axidma-petalinux/blob/b35f0c39ab94c302b841f6f25c232c2ff58b5173/Hardware/zcu102-axi-hp.tcl
+[petalinux-starter-guide]: {{ site.url }}/posts/petalinux-starter-guide
+[preparing-the-bootable-flash-drive]: {{site.url}}/posts/petalinux-starter-guide/#preparing-the-bootable-flash-drive
+[booting-bootloaders]: {{site.url}}/posts/petalinux-starter-guide/#booting-bootloaders
+
+In this post, we will walk through the bring-up and testing of the AXIDMA using vitis bare-metal examples and the petalinux axidmatest driver. The hardware configuration for this demonstration is based on the setup described at [fpgadeveloper.com], you can also refer the [youtube video](https://www.youtube.com/watch?v=Ld01yPmW_Xw); however, I have provided the full `.tcl` script for the vivado project to simplify the setup.
 
 {% include embed/youtube.html id='Ld01yPmW_Xw' %}
 
@@ -28,7 +34,7 @@ In this post, we will walk through the bring-up and testing of the AXIDMA using 
 ```bash
 # Open Vivado and use tcl console
 # Navigate to home directory and verify path
-cd [file normalize ~]
+cd "[file normalize ~]"
 puts "Current working directory: [pwd]"
 
 # Create and navigate to the working directory
@@ -36,14 +42,11 @@ file mkdir "[file normalize ~]/axidma-vivado"
 cd "[file normalize ~]/axidma-vivado"
 ```
 
-[axi-dma.tcl]: https://github.com/Sanjay0302/axidma-petalinux/blob/b35f0c39ab94c302b841f6f25c232c2ff58b5173/Hardware/zcu102-axi-hp.tcl
-
-Downlaod this `.tcl` script [`axi-dma.tcl`][axi-dma.tcl] and save it inside `~/axidma-vivado`.
+Downlaod this `.tcl` script [axi-dma.tcl] and save it inside `~/axidma-vivado`.
 
 > This tcl script uses HP port, so this port doesn't suppport hardware cache coherency (cci-400).
 >
 > The script with `cci-400` will be explained in next blog.
-
 
 ```bash
 # make sure to save the downloaded tcl script inside this folder ~/axidma-vivado
@@ -79,7 +82,8 @@ write_hw_platform -fixed -include_bit -force -file "[file normalize ~]/axidma-vi
 ### ZCU102 Petalinux Build
 
 > We need few pre-requisites for petalinux build to test the `axidma`, which includes downloading the offline files of petalinux `downloads`, `sstate-cache` for `aarch64` and petalinux toolchain.
-> Follow the steps explained in [petalinux-starter-guide]({{ site.url }}/posts/petalinux-starter-guide).
+>
+> Follow the steps explained in [petalinux-starter-guide].
 {: .prompt-tip}
 
 ```bash
@@ -97,6 +101,8 @@ petalinux-config --get-hw-description=$HOME/axidma-vivado/axi-dma/design_1_wrapp
 
 ```
 
+{% capture details_content %}
+
 | Configuration Option                    | Value                                                           | Description / Purpose                                        |
 | --------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------ |
 | `CONFIG_SUBSYSTEM_BOOTARGS_AUTO`        | `y`                                                             | Automatically generates kernel boot arguments                |
@@ -109,11 +115,12 @@ petalinux-config --get-hw-description=$HOME/axidma-vivado/axi-dma/design_1_wrapp
 | `CONFIG_PRE_MIRROR_URL`                 | `file:///home/user/petalinux_downloads_sstate_shared/downloads` | Points to local source downloads mirror                      |
 | `CONFIG_YOCTO_LOCAL_SSTATE_FEEDS_URL`   | `/home/user/petalinux_downloads_sstate_shared/aarch64`          | Specifies the local shared sstate feed path                  |
 | `CONFIG_YOCTO_NETWORK_SSTATE_FEEDS`     | `n`                                                             | Disables network-based sstate feeds                          |
-| `CONFIG_YOCTO_BB_NO_NETWORK`            | `y`                                                             | Forces offline BitBake builds without internet access        | **** |
+| `CONFIG_YOCTO_BB_NO_NETWORK`            | `y`                                                             | Forces offline BitBake builds without internet access        |
 
+{% endcapture %}
+{% include details.html title="Petalinux Config Variables" content=details_content %}
 
 After setting above configs, `CONFIG_SUBSYSTEM_USER_CMDLINE` will contain final kernel bootargs, which will look like `earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/sda1 rw rootwait cma=1024M`
-
 
 ---
 
@@ -123,6 +130,8 @@ After setting above configs, `CONFIG_SUBSYSTEM_USER_CMDLINE` will contain final 
 # set the kernel configuration options using 
 petalinux-config -c kernel
 ```
+
+{% capture details_content %}
 
 | Kernel Configuration Option | Value  | Description / Purpose                                         |
 | --------------------------- | ------ | ------------------------------------------------------------- |
@@ -145,6 +154,8 @@ petalinux-config -c kernel
 | `CONFIG_USB_XHCI_HCD`       | `y`    | Enables xHCI USB controller support (USB 3.0)                 |
 | `CONFIG_USB_XHCI_PLATFORM`  | `y`    | Enables generic platform xHCI controller driver               |
 
+{% endcapture %}
+{% include details.html title="Petalinux Kernel Config Variales" content=details_content %}
 
 ---
 
@@ -155,6 +166,8 @@ petalinux-config -c kernel
 petalinux-config -c rootfs
 ```
 
+{% capture details_content %}
+
 | RootFS Configuration Option / Recipe   | Value | Description / Purpose                                            |
 | -------------------------------------- | ----- | ---------------------------------------------------------------- |
 | `CONFIG_libmali-xlnx`                  | `y`   | Enables the Xilinx Mali GPU user-space library                   |
@@ -162,6 +175,9 @@ petalinux-config -c rootfs
 | `CONFIG_packagegroup-petalinux-weston` | `y`   | Includes the PetaLinux Weston (Wayland compositor) package group |
 | `CONFIG_axidma-driver`                 | `y`   | Enables the custom AXI DMA driver recipe in the rootfs           |
 | `CONFIG_auto-login`                    | `y`   | Enables automatic console login for the root user                |
+
+{% endcapture %}
+{% include details.html title="Petalinux Rootfs Config Variables" content=details_content %}
 
 ---
 
@@ -176,6 +192,7 @@ petalinux-build -c device-tree
 Using this command the DMA IP block parameters are succesfully translated to devicetree node, it captures the memory mapped address, scatter gather settings, buffer length, read and write channel properties.
 
 {% capture details_content %}
+
 ```c
 
 /* file: ./components/plnx_workspace/device-tree/device-tree/pl.dtsi
@@ -184,42 +201,43 @@ Using this command the DMA IP block parameters are succesfully translated to dev
  */
 
 / {
-	amba_pl: amba_pl@0 {
-		#address-cells = <2>;
-		#size-cells = <2>;
-		compatible = "simple-bus";
-		ranges ;
-		axi_dma_0: dma@a0000000 {
-			#dma-cells = <1>;
-			clock-names = "s_axi_lite_aclk", "m_axi_sg_aclk", "m_axi_mm2s_aclk", "m_axi_s2mm_aclk";
-			clocks = <&zynqmp_clk 71>, <&zynqmp_clk 71>, <&zynqmp_clk 71>, <&zynqmp_clk 71>;
-			compatible = "xlnx,axi-dma-7.1", "xlnx,axi-dma-1.00.a";
-			interrupt-names = "mm2s_introut", "s2mm_introut";
-			interrupt-parent = <&gic>;
-			interrupts = <0 89 4 0 90 4>;
-			reg = <0x0 0xa0000000 0x0 0x10000>;
-			xlnx,addrwidth = <0x20>;
-			xlnx,include-sg ;
-			xlnx,sg-length-width = <0xe>;
-			dma-channel@a0000000 {
-				compatible = "xlnx,axi-dma-mm2s-channel";
-				dma-channels = <0x1>;
-				interrupts = <0 89 4>;
-				xlnx,datawidth = <0x20>;
-				xlnx,device-id = <0x0>;
-			};
-			dma-channel@a0000030 {
-				compatible = "xlnx,axi-dma-s2mm-channel";
-				dma-channels = <0x1>;
-				interrupts = <0 90 4>;
-				xlnx,datawidth = <0x20>;
-				xlnx,device-id = <0x0>;
-			};
-		};
-	};
+  amba_pl: amba_pl@0 {
+    #address-cells = <2>;
+    #size-cells = <2>;
+    compatible = "simple-bus";
+    ranges ;
+    axi_dma_0: dma@a0000000 {
+      #dma-cells = <1>;
+      clock-names = "s_axi_lite_aclk", "m_axi_sg_aclk", "m_axi_mm2s_aclk", "m_axi_s2mm_aclk";
+      clocks = <&zynqmp_clk 71>, <&zynqmp_clk 71>, <&zynqmp_clk 71>, <&zynqmp_clk 71>;
+      compatible = "xlnx,axi-dma-7.1", "xlnx,axi-dma-1.00.a";
+      interrupt-names = "mm2s_introut", "s2mm_introut";
+      interrupt-parent = <&gic>;
+      interrupts = <0 89 4 0 90 4>;
+      reg = <0x0 0xa0000000 0x0 0x10000>;
+      xlnx,addrwidth = <0x20>;
+      xlnx,include-sg ;
+      xlnx,sg-length-width = <0xe>;
+      dma-channel@a0000000 {
+        compatible = "xlnx,axi-dma-mm2s-channel";
+        dma-channels = <0x1>;
+        interrupts = <0 89 4>;
+        xlnx,datawidth = <0x20>;
+        xlnx,device-id = <0x0>;
+      };
+      dma-channel@a0000030 {
+        compatible = "xlnx,axi-dma-s2mm-channel";
+        dma-channels = <0x1>;
+        interrupts = <0 90 4>;
+        xlnx,datawidth = <0x20>;
+        xlnx,device-id = <0x0>;
+      };
+    };
+  };
 };
 
 ```
+
 {% endcapture %}
 {% include details.html title="pl.dtsi" content=details_content %}
 
@@ -288,17 +306,15 @@ nano project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi
 ### Build and Flash
 
 Follow the same exact steps we discussed in
-* [preparing-the-bootable-flash-drive]({{site.url}}/posts/petalinux-starter-guide/#preparing-the-bootable-flash-drive)
-* [booting-bootloaders]({{site.url}}/posts/petalinux-starter-guide/#booting-bootloaders)
+
+* [preparing-the-bootable-flash-drive]
+* [booting-bootloaders]
 
 Once you are in u-boot hush shell, will boot kernel from usb flash drive manually
 
 ```bash
-ext4ls usb 0:1 /boot/
-ext4load usb 0:1 0x00200000 /boot/Image
-ext4load usb 0:1 0x00100000 /boot/system.dtb
-setenv bootargs "console=ttyPS0,115200 root=/dev/sda1 rw rootwait cma=1024M"
-booti 0x00200000 - 0x00100000
+ext4load usb 0:1 0x00200000 /boot/Image; ext4load usb 0:1 0x00100000 /boot/system.dtb; setenv bootargs "console=ttyPS0,115200 root=/dev/sda1 rw rootwait cma=1024M"; booti 0x00200000 - 0x00100000
+
 ```
 
 Once booted will probe the axidmatest kernel module to verify the vivado hardware loopback design.
